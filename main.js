@@ -13,8 +13,8 @@ let escalaProyeccion = 1;
 let phi = 20 * (Math.PI / 180);
 const theta = 30 * (Math.PI / 180);
 
-let alfa = 45;
-let k = 0.59;
+let alfa = (1/3);0.25;
+let k = 0.5;
 let cantidadRamas = 3;
 let profundidad = 6;
 let fase = 0;
@@ -29,7 +29,7 @@ function draw(alfa, k, cantidadRamas) {
 	const MundoAPantalla = (()=>{
 		const Rz = rotacionZ(phi);
 		const Rx = rotacionX(theta);
-		const s = (cnv.height * 0.8) / escalaProyeccion;
+		const s = (height * 0.8) / escalaProyeccion;
 		const S = escala(s, s, s);
 		const proyeccion = new Matriz([
 				[1, 0, 0, 0],
@@ -39,8 +39,8 @@ function draw(alfa, k, cantidadRamas) {
 	})();
 
 	function plotearSegmento(p1, p2) {
-		const dx = cnv.width * 0.5;
-		const dy = cnv.height * 0.8;
+		const dx = width * 0.5;
+		const dy = height * 0.8;
 		const pp1 = producto(MundoAPantalla, p1);
 		const pp2 = producto(MundoAPantalla, p2);
 		ctx.moveTo(pp1.entrada(0, 0)+dx, pp1.entrada(1, 0)+dy);
@@ -50,7 +50,7 @@ function draw(alfa, k, cantidadRamas) {
 	const transformaciones = [
 	];
 	const T1 = traslacion(0, 0, 1);
-	const T2 = producto(rotacionX(alfa), escala(k, k, k));
+	const T2 = producto(rotacionX(alfa * Math.PI), escala(k, k, k));
 	for (const angulo of angulos) {
 		const Rz = rotacionZ(angulo * (Math.PI / 180));
 		const T = producto(T1, producto(Rz, T2));
@@ -74,7 +74,7 @@ function draw(alfa, k, cantidadRamas) {
 	}
 
 
-	ctx.clearRect(0, 0, cnv.width, cnv.height);
+	ctx.clearRect(0, 0, width, height);
 	ctx.beginPath();
 	arbol(profundidad, I4);
 	ctx.stroke();
