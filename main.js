@@ -9,25 +9,27 @@ const I4 = new Matriz([
 	[0, 0, 0, 1],
 ]);
 
+let escalaProyeccion = 1;
 let phi = 20 * (Math.PI / 180);
 const theta = 30 * (Math.PI / 180);
 
 let alfa = 45;
 let k = 0.59;
 let cantidadRamas = 3;
-let profundidad = 4;
+let profundidad = 6;
+let fase = 0;
 
 function draw(alfa, k, cantidadRamas) {
 	phi += 0.008;
 
 	const angulos = [];
 	for (let i = 0; i < cantidadRamas; ++i)
-		angulos.push(i * 360 / cantidadRamas);
+		angulos.push((i + fase) * 360 / cantidadRamas);
 
 	const MundoAPantalla = (()=>{
 		const Rz = rotacionZ(phi);
 		const Rx = rotacionX(theta);
-		const s = 200;
+		const s = (cnv.height * 0.8) / escalaProyeccion;
 		const S = escala(s, s, s);
 		const proyeccion = new Matriz([
 				[1, 0, 0, 0],
@@ -37,8 +39,8 @@ function draw(alfa, k, cantidadRamas) {
 	})();
 
 	function plotearSegmento(p1, p2) {
-		const dx = cnv.width/2;
-		const dy = cnv.height;
+		const dx = cnv.width * 0.5;
+		const dy = cnv.height * 0.8;
 		const pp1 = producto(MundoAPantalla, p1);
 		const pp2 = producto(MundoAPantalla, p2);
 		ctx.moveTo(pp1.entrada(0, 0)+dx, pp1.entrada(1, 0)+dy);
@@ -82,26 +84,43 @@ function update() {
 	draw(alfa, k, cantidadRamas);
 }
 
+function computarEscalaProyeccion() {
+	let tam = 0;
+	for (let i = 0; i < profundidad; ++i)
+		tam += Math.pow(k, i);
+	escalaProyeccion = tam;
+}
+
 window.setInterval(update, 30);
 
 {
 const ramasInp = document.getElementById('ramasInp');
-ramasInp.addEventListener("change", function() {
-	cantidadRamas = ramasInp.value;
+ramasInp.addEventListener("input", function() {
+	cantidadRamas = Number(ramasInp.value);
 });
 
 const profInp = document.getElementById('profInp');
-profInp.addEventListener("change", function() {
-	profundidad = profInp.value;
+profInp.addEventListener("input", function() {
+	profundidad = Number(profInp.value);
+	computarEscalaProyeccion();
 });
 
 const escalaInp = document.getElementById('escalaInp');
 escalaInp.addEventListener("input", function() {
-	k = escalaInp.value;
+	k = Number(escalaInp.value);
+	computarEscalaProyeccion();
 });
 
 const alfaInp = document.getElementById('alfaInp');
 alfaInp.addEventListener("input", function() {
-	alfa = alfaInp.value;
+	alfa = Number(alfaInp.value);
+});
+
+const faseInp = document.getElementById('faseInp');
+faseInp.addEventListener("input", function() {
+	fase = Number(faseInp.value);
 });
 }
+
+computarEscalaProyeccion();
+update();
