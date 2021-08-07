@@ -8,7 +8,7 @@ export class Matriz {
 	}
 
 	static conTamanno(filas, columnas) {
-		let m = new Array(filas*columnas).fill(0);
+		let m = new Array(filas*columnas);
 		return new Matriz(filas, columnas, m);
 	}
 
