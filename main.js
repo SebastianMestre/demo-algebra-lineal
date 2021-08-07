@@ -1,12 +1,14 @@
 import { Matriz, producto, rotacionX, rotacionZ, escala, traslacion, vector } from './mat.js';
 
 const ctx = cnv.getContext('2d');
+const width = cnv.width;
+const height = cnv.height;
 
-const I4 = new Matriz([
-	[1, 0, 0, 0], 
-	[0, 1, 0, 0], 
-	[0, 0, 1, 0], 
-	[0, 0, 0, 1],
+const I4 = new Matriz(4, 4, [
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1,
 ]);
 
 let escalaProyeccion = 1;
@@ -31,9 +33,9 @@ function draw(alfa, k, cantidadRamas) {
 		const Rx = rotacionX(theta);
 		const s = (height * 0.8) / escalaProyeccion;
 		const S = escala(s, s, s);
-		const proyeccion = new Matriz([
-				[1, 0, 0, 0],
-				[0, 0, -1, 0],
+		const proyeccion = new Matriz(2, 4, [
+				1, 0,  0, 0,
+				0, 0, -1, 0,
 		]);
 		return producto(proyeccion, producto(S, producto(Rx, Rz)));
 	})();
